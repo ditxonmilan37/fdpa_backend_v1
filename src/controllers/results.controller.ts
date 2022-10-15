@@ -472,8 +472,6 @@ export const setResultM2 = async (req: Request, res: Response) => {
 export const getResultsWithSerieCampoM2 = async (req: Request, res: Response) => {
     try {
 
-        
-
         const serieView = await Serie_view.findBy({ id_test: parseInt(req.params.idTest), status: 1 })
 
         let itemResults: Array<any> = []
@@ -482,7 +480,6 @@ export const getResultsWithSerieCampoM2 = async (req: Request, res: Response) =>
             serieView.map(async (item) => {
                 const ResultsView = await Results_view_campo.findBy({ id_serie: item.id })
 
-                
                  let dataNew: Array<any> = [];
 
                  let itemResultsM2: Array<any> = []
@@ -501,20 +498,22 @@ export const getResultsWithSerieCampoM2 = async (req: Request, res: Response) =>
                         return 0;
                     });
 
-                    ResultsViewM2.map((child, index) => {
-                        itemResultsM2.push({
-                            size: child.size,
-                            id: child.id,
-                            res: [{
-                                r1: child.r1,
-                                r2: child.r2,
-                                r3: child.r3,
-                            }]
-                        })
+                    ResultsViewM2.map( async (child, index) => {
+                        if(child.r1 != null || child.r2 != null || child.r3 != null){
+                            await itemResultsM2.push({
+                                size: child.size,
+                                id: child.id,
+                                res: [{
+                                    r1: child.r1,
+                                    r2: child.r2,
+                                    r3: child.r3,
+                                }]
+                            })
+                        }
+                       
                     })
 
-
-                    dataNew.push({
+                    await dataNew.push({
                         id: item.id,
                         name: item.camp5,
                         team: item.camp6,
@@ -522,9 +521,7 @@ export const getResultsWithSerieCampoM2 = async (req: Request, res: Response) =>
                      })
                  })
 
-                 
-
-                itemResults.push({
+                 await itemResults.push({
                     id_serie: item.id,
                     id_test: item.id_test,
                     code_serie: item.code,
@@ -535,16 +532,15 @@ export const getResultsWithSerieCampoM2 = async (req: Request, res: Response) =>
             })
         )
 
-
-
        if(save){
+       setTimeout(()=>{
         return res.status(200).json({
             statusBol: true,
             data: itemResults
         })
+       },3000)
        }
         
-
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
