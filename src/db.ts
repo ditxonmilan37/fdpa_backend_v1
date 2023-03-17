@@ -21,11 +21,11 @@ import { TestTime_view } from "./entities/test_view_all";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
-    host: "172.17.0.6",
-    port: 5432,
+    host: "164.92.99.84",
+    port: 10005,
     username: "administrator",
-    password: "@DeveloperGrades2022",
-    database: "fdpa_data_master_pro",
+    password: "@Developer2023FDPA",
+    database: "fdpa_data_master_dev",
     entities: [
         Events,
         Events_view,
