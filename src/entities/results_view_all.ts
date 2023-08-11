@@ -129,7 +129,7 @@ export class Results_view extends BaseEntity {
   viento6: string;
 
   @ViewColumn()
-  parcial: string;
+  parcial: number;
 }
 
 @ViewEntity("view_data_results_app_campo")
@@ -243,7 +243,7 @@ export class Results_view_campo extends BaseEntity {
   viento6: string;
 
   @ViewColumn()
-  parcial: string;
+  parcial: number;
 }
 
 @ViewEntity("view_data_r2_size")
