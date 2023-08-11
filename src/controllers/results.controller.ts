@@ -446,9 +446,8 @@ export const getResultsWithSerieCampoM2 = async (
 
         let dataNew: Array<any> = [];
 
-        let itemResultsM2: Array<any> = [];
-
         ResultsView.map(async (item) => {
+          let itemResultsM2: Array<any> = [];
           const ResultsViewM2 = await Results_view_m2.findBy({
             id_result: item.id,
           });
