@@ -15,7 +15,26 @@ import resultsRoutes from './routes/results.routes'
 import timeRoutes from './routes/time.routes'
 import turnRoutes from './routes/turn.routes'
 
+const path = require('path');
+
+
 const app = express()
+
+import multer from 'multer';
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+
+const upload = multer({ storage: storage })
 
 app.use(morgan('dev'));
 app.use(cors());
