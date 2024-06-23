@@ -284,7 +284,7 @@ function eventToHtml(eventData: any) {
           >
             <td style="padding: 2px; font-size: 9px; text-align: center; border-right: solid 1px;" rowspan="2">${index+1}</td>
             ${result.results.map((r: any) => `
-            <td style="padding: 2px; font-size: 9px; text-align: center; border-right: solid 1px;"  colspan="3">${r.size}</td>
+            <td style="padding: 2px; font-size: 6px; text-align: center; border-right: solid 1px;"  colspan="3">${r.size}</td>
             `).join('')}
 
           </tr>
@@ -292,13 +292,13 @@ function eventToHtml(eventData: any) {
           <tr style="border-bottom: solid 1px grey">
 
             ${result.results.map((r: any) => `
-            <td style="padding: 2px; font-size: 7px; text-align: center;">
+            <td style="padding: 2px; font-size: 5px; text-align: center;">
             ${r.res[0].r1 === 1 ? 'O' : r.res[0].r1 === 2 ? '-' : r.res[0].r1 === 0 ? 'X' : ' '}
            </td>
-           <td style="padding: 2px; font-size: 7px; text-align: center;">
+           <td style="padding: 2px; font-size: 5px; text-align: center;">
            ${r.res[0].r2 === 1 ? 'O' : r.res[0].r2 === 2 ? '-' : r.res[0].r2 === 0 ? 'X' : ' '}
             </td>
-            <td style="padding: 2px; font-size: 7px; text-align: center; border-right: solid 1px;">
+            <td style="padding: 2px; font-size: 5px; text-align: center; border-right: solid 1px;">
             ${r.res[0].r3 === 1 ? 'O' : r.res[0].r3 === 2 ? '-' : r.res[0].r3 === 0 ? 'X' : ' '}
             </td>
             `).join('')}
