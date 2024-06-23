@@ -6,7 +6,7 @@ import { Pais_view } from "./entities/pais_view_all";
 import { Organizers_view } from "./entities/organizers_view_all";
 import { Inspectors_view } from "./entities/inspectors_view_all";
 import { Test_view } from "./entities/test_view_all";
-import { Test } from "./entities/test";
+import { Test, TestType } from "./entities/test";
 import { Categories_view } from "./entities/categories_view_all";
 import { Gender_view } from "./entities/gender_view_all";
 import { DataTest_view } from "./entities/data_test_view_all";
@@ -34,6 +34,7 @@ export const AppDataSource = new DataSource({
         Inspectors_view,
         Test_view,
         Test,
+        TestType,
         Categories_view,
         Gender_view,
         DataTest_view,

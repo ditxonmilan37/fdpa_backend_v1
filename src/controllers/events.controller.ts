@@ -9,7 +9,7 @@ import { Categories_view } from '../entities/categories_view_all'
 import { Time_view } from '../entities/time_view_all'
 import { Test_view } from '../entities/test_view_all'
 import { Serie_view } from '../entities/serie_view_all'
-import { Results_view } from '../entities/results_view_all'
+import { Results_view, Results_view_m2 } from '../entities/results_view_all'
 import { Results } from '../entities/results'
 
 import pdfMake from "pdfmake/build/pdfmake";
@@ -38,6 +38,7 @@ export const getEventsAll = async (req: Request, res: Response) => {
 
 
 import pdf from 'html-pdf';
+import { DataTest_view } from '../entities/data_test_view_all'
 
 function eventToHtml(eventData: any) {
     // Aquí puedes definir cómo quieres que se vea el HTML.
@@ -85,10 +86,11 @@ function eventToHtml(eventData: any) {
         </ul>
       </div>
 
-      ${eventData.tests.map((test: any) => `
+      ${eventData.tests.sort((a:any, b:any) => a.id - b.id).map((test: any) => `
+        ${test.typeTest === "1" ? `
         <div style="display: block; margin-top: 5px; padding: 0px 20px">
         <div>
-          <h4 style="padding: 0; margin: 0; font-size: 7px">
+          <h4 style="padding: 0; margin-top: 10px; font-size: 12px">
             ${test.nameTest} ${test.gender} ${test.category}
           </h4>
           <h4 style="padding: 0; margin: 0; font-size: 7px">
@@ -140,6 +142,179 @@ function eventToHtml(eventData: any) {
 
 
       </div>
+        `: `
+        ${test.typeTest === "4" && test.categoryTest === "1" ?  `
+        
+            
+        <div style="display: block; margin-top: 5px; padding: 0px 20px">
+        <div>
+          <h4 style="padding: 0; margin-top: 10px; font-size: 12px">
+            ${test.nameTest} ${test.gender} ${test.category}
+          </h4>
+          <h4 style="padding: 0; margin: 0; font-size: 7px">
+            
+          </h4>
+        </div>
+
+        ${test.series.map((serie: any) => `
+        <h4 style="padding: 0; margin: 0; font-size: 7px; margin-top: 20px">
+            ${serie.name}
+          </h4>
+
+        ${serie.resultsView.sort((a:any, b:any) => b.parcial - a.parcial).map((result: any, index:any) => `
+        <table
+        width="100%"
+        style="
+          margin-top: 10px;
+          border-collapse: collapse;
+          border: 1px solid grey;
+        "
+      >
+      <tr
+          style="background-color: #16203e; color: #ffd792; font-weight: bold"
+        >
+          <td colspan="4" style="padding: 2px; font-size: 9px" width="10%;">${result.camp5}</td>
+          <td style="padding: 2px; font-size: 9px" width="10%">${result.camp6}</td>
+          <td style="padding: 2px; font-size: 9px" width="10%"></td>
+          <td style="padding: 2px; font-size: 9px" width="10%">${result.parcial ? result.parcial : ' '}</td>
+          <td style="padding: 2px; font-size: 9px" width="10%"></td>
+        </tr>
+        <tr
+          style="background-color: #d6d6d6; color: #000000; font-weight: bold"
+        >
+          <td style="padding: 2px; font-size: 9px;  text-align:center" width="10%">Posición.</td>
+          <td style="padding: 2px; font-size: 9px" width="10%">1</td>
+          <td style="padding: 2px; font-size: 9px" width="10%">2</td>
+          <td style="padding: 2px; font-size: 9px" width="10%">3</td>
+          <td style="padding: 2px; font-size: 9px; text-align:center" width="10%">Cla</td>
+          <td style="padding: 2px; font-size: 9px" width="10%">4</td>
+          <td style="padding: 2px; font-size: 9px" width="10%">5</td>
+          <td style="padding: 2px; font-size: 9px" width="10%">6</td>
+        </tr>
+
+        <tr style="border-bottom: solid 1px grey">
+          <td style="padding: 2px; font-size: 7px; text-align:center" rowspan="2">${index + 1}</td>
+          <td style="padding: 2px; font-size: 7px">
+            ${ result.bol1 === 0 ? 'X' : result.bol1 === 1 ? '-' : result.result1 ? result.result1 : ' '}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol2 === 0 ? 'X' : result.bol2 === 1 ? '-' : result.result2 ? result.result2 : ' '}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol3 === 0 ? 'X' : result.bol3 === 1 ? '-' : result.result3 ? result.result3 : ' '}
+          </td>
+          <td style="padding: 2px; font-size: 7px; text-align:center" rowspan="2">
+          ${ result.parcial ? result.parcial : ' ' }
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+            ${ result.bol4 === 0 ? 'X' : result.bol4 === 1 ? '-' : result.result4 ? result.result4 : ' '}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol5 === 0 ? 'X' : result.bol5 === 1 ? '-' : result.result5 ? result.result5 : ' '}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol6 === 0 ? 'X' : result.bol6 === 1 ? '-' : result.result6 ? result.result6 : ' '}
+          </td>
+          
+        </tr>
+        <tr style="border-bottom: solid 1px grey">
+         
+        <td style="padding: 2px; font-size: 7px">
+            ${ result.bol1 === 0 ? '.' : result.bol1 === 1 ? '.' : result.viento1 ? result.viento1 : '.'}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol2 === 0 ? '.' : result.bol2 === 1 ? '.' : result.viento2 ? result.viento2 : '.'}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol3 === 0 ? '.' : result.bol3 === 1 ? '.' : result.viento3 ? result.viento3 : '.'}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+            ${ result.bol4 === 0 ? '.' : result.bol4 === 1 ? '.' : result.viento4 ? result.viento4 : '.'}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol5 === 0 ? '.' : result.bol5 === 1 ? '.' : result.viento5 ? result.viento5 : '.'}
+          </td>
+          <td style="padding: 2px; font-size: 7px">
+           ${ result.bol6 === 0 ? '.' : result.bol6 === 1 ? '.' : result.viento6 ? result.viento6 : '.'}
+          </td>
+        </tr>
+      </table>
+        `).join('')}
+        `).join('')}
+
+
+      </div>
+       
+        
+        
+        ` : `
+        ${test.typeTest === "4" && test.categoryTest === "2" ? `
+           <div style="display: block; margin-top: 5px; padding: 0px 20px">
+           <div>
+             <h4 style="padding: 0; margin-top: 10px; font-size: 12px">
+               ${test.nameTest} ${test.gender} ${test.category}
+             </h4>
+             <h4 style="padding: 0; margin: 0; font-size: 7px">
+               
+             </h4>
+           </div>
+   
+           ${test.series.map((serie: any) => `
+           <h4 style="padding: 0; margin: 0; font-size: 7px; margin-top: 20px">
+               ${serie.name}
+             </h4>
+   
+           ${serie.resultsViewM2.sort((a:any, b:any) => b.lastSizeWithOne - a.lastSizeWithOne).map((result: any, index:any) => `
+           <table
+          width="100%"
+          style="
+            margin-top: 10px;
+            border-collapse: collapse;
+            border: 1px solid grey;
+          "
+        >
+        <tr
+            style="background-color: #16203e; color: #ffd792; font-weight: bold"
+          >
+
+            <td colspan="${(result.results.length * 3) + 1}" style="padding: 2px; font-size: 9px">${result.name} <span style="float: right; margin-right: 20px">${result.lastSizeWithOne}</span> </td>
+          </tr>
+          <tr
+            style="background-color: #d6d6d6; color: #000000; font-weight: bold"
+          >
+            <td style="padding: 2px; font-size: 9px; text-align: center; border-right: solid 1px;" rowspan="2">${index+1}</td>
+            ${result.results.map((r: any) => `
+            <td style="padding: 2px; font-size: 9px; text-align: center; border-right: solid 1px;"  colspan="3">${r.size}</td>
+            `).join('')}
+
+          </tr>
+
+          <tr style="border-bottom: solid 1px grey">
+
+            ${result.results.map((r: any) => `
+            <td style="padding: 2px; font-size: 7px; text-align: center;">
+            ${r.res[0].r1 === 1 ? 'O' : r.res[0].r1 === 2 ? '-' : r.res[0].r1 === 0 ? 'X' : ' '}
+           </td>
+           <td style="padding: 2px; font-size: 7px; text-align: center;">
+           ${r.res[0].r2 === 1 ? 'O' : r.res[0].r2 === 2 ? '-' : r.res[0].r2 === 0 ? 'X' : ' '}
+            </td>
+            <td style="padding: 2px; font-size: 7px; text-align: center; border-right: solid 1px;">
+            ${r.res[0].r3 === 1 ? 'O' : r.res[0].r3 === 2 ? '-' : r.res[0].r3 === 0 ? 'X' : ' '}
+            </td>
+            `).join('')}
+  
+          </tr>
+
+        </table>
+           `).join('')}
+           `).join('')}
+   
+   
+         </div>
+          
+        ` : ``}	
+        `}
+        `}
       `).join('')}
     </div>
   </body>
@@ -160,21 +335,77 @@ export const getEvent = async (req: Request, res: Response) => {
             })
         }
 
-        const tests = await Test.findBy({id_event: parseInt(eventId)})
+        const tests = await Test.findBy({id_event: parseInt(eventId), status: 1})
         const testsData = await Promise.all(tests.map(async (test) => {
             const turn = await Turn_view.findOneBy({id: test.id_turn}) // Asume que cada test tiene una propiedad 'id_turn'
             const gender = await Gender_view.findOneBy({id: test.id_gender}) // Asume que cada test tiene una propiedad 'id_gender'
             const category = await Categories_view.findOneBy({id: test.id_category}) // Asume que cada test tiene una propiedad 'id_category'
             const time = await Time_view.findOneBy({id: test.id_time}) // Asume que cada test tiene una propiedad 'id_time'
-            const name = await Test_view.findOneBy({id: test.id_test}) // Asume que cada test tiene una propiedad 'id_time'
-            const series = await Serie_view.findBy({id_test: test.id}) // Asume que cada test tiene una propiedad 'id'
+            const dataTest = await DataTest_view.findOneBy({id_test: test.id_test}) // Asume que cada test tiene una propiedad 'id_time'
+            const series = await Serie_view.findBy({id_test: test.id, status: 1}) // Asume que cada test tiene una propiedad 'id'
+            //const dataTest = await DataTest_view.findOneBy({id_test: test.id}) // Asume que cada test tiene una propiedad 'id'
 
             const seriesData = await Promise.all(series.map(async (serie) => {
                 const resultsView = await Results_view.findBy({id_serie: serie.id})
+                const resultsViewM2 = await Results_view_m2.findBy({id_serie: serie.id})
+
+                let itemResults: Array<any> = [];
+                let lastSizeWithOne: any = "";
+
+                const save = await Promise.all(
+                    resultsView.map(async (item, index) => {
+                    const ResultsViewM2 = await Results_view_m2.findBy({
+                    id_result: item.id,
+                    });
+
+                    let result = JSON.parse(JSON.stringify(ResultsViewM2));
+
+                    let itemResultsM2: Array<any> = [];
+
+                    ResultsViewM2.sort((a: any, b: any) => {
+                    if (a.size < b.size) {
+                        return -1;
+                    }
+                    if (a.size > b.size) {
+                        return 1;
+                    }
+                    return 0;
+                    });
+
+                    ResultsViewM2.map((child, index) => {
+                    itemResultsM2.push({
+                        size: child.size,
+                        id: child.id,
+                        res: [
+                        {
+                            r1: child.r1,
+                            r2: child.r2,
+                            r3: child.r3,
+                        },
+                        ],
+                    });
+
+                    if (child.r1 == "1" || child.r2 == "1" || child.r3 == "1") {
+                        lastSizeWithOne = child.size;
+                    }
+                    
+                    });
+
+                    itemResults.push({
+                    id: item.id,
+                    name: item.camp5,
+                    results: itemResultsM2,
+                    lastSizeWithOne: lastSizeWithOne,
+                    });
+
+                    lastSizeWithOne = "";
+                })
+                );
 
                 return {
                     ...serie,
                     resultsView: resultsView,
+                    resultsViewM2: itemResults
                 };
             }))
 
@@ -184,7 +415,9 @@ export const getEvent = async (req: Request, res: Response) => {
                 gender: gender ? gender.name : null,
                 category: category ? category.name : null,
                 time: time ? time.name : null,
-                nameTest: name ? name.description : null,
+                nameTest: dataTest ? dataTest.name_test : null,
+                typeTest: dataTest ? dataTest.id_type_test : null,
+                categoryTest: dataTest ? dataTest.type_test_category : null,
                 series: seriesData // Añade las series con los resultados a los datos del test
             };
         }))
@@ -195,7 +428,8 @@ export const getEvent = async (req: Request, res: Response) => {
         };
 
         const html = eventToHtml(eventData);
-        pdf.create(html).toStream((err, stream) => {
+        
+        pdf.create(html, {orientation: 'landscape'}).toStream((err, stream) => {
             if (err) {
                 return res.status(500).json({
                     statusBol: false,
@@ -205,6 +439,10 @@ export const getEvent = async (req: Request, res: Response) => {
 
             res.setHeader('Content-Type', 'application/pdf');
             stream.pipe(res);
+            //return res.status(200).json({
+            //    statusBol: false,
+            //    message: eventData
+            //});
         });
     } catch (error) {
         if (error instanceof Error) {
