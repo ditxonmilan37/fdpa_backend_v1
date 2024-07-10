@@ -382,6 +382,7 @@ export const setSize = async (req: Request, res: Response) => {
     );
 
     if (save) {
+      
       return res.status(200).json({
         statusBol: true,
         data: result,
@@ -446,8 +447,9 @@ export const getResultsWithSerieCampoM2 = async (
 
         let dataNew: Array<any> = [];
 
-        ResultsView.map(async (item) => {
+        await Promise.all(ResultsView.map(async (item) => {
           let itemResultsM2: Array<any> = [];
+          let lastSizeWithOne: any = "";
           const ResultsViewM2 = await Results_view_m2.findBy({
             id_result: item.id,
           });
@@ -462,9 +464,9 @@ export const getResultsWithSerieCampoM2 = async (
             return 0;
           });
 
-          ResultsViewM2.map(async (child, index) => {
+          await Promise.all(ResultsViewM2.map(async (child, index) => {
             if (child.r1 != null || child.r2 != null || child.r3 != null) {
-              await itemResultsM2.push({
+              itemResultsM2.push({
                 size: child.size,
                 id: child.id,
                 res: [
@@ -475,18 +477,27 @@ export const getResultsWithSerieCampoM2 = async (
                   },
                 ],
               });
-            }
-          });
 
-          await dataNew.push({
+              if ((child.r1 && Number(child.r1) === 1) || (child.r2 && Number(child.r2) === 1) || (child.r3 && Number(child.r3) === 1)) {
+                let size = Number(child.size).toFixed(2);
+                lastSizeWithOne = size.includes('.') ? size : size + '.00';
+              }
+            }
+          }));
+
+          dataNew.push({
             id: item.id,
             name: item.camp5,
             team: item.camp6,
             results: itemResultsM2,
+            lastSizeWithOne: lastSizeWithOne,
           });
-        });
+        }));
 
-        await itemResults.push({
+        // Sort dataNew array in descending order based on lastSizeWithOne
+        dataNew.sort((a, b) => b.lastSizeWithOne - a.lastSizeWithOne);
+
+        itemResults.push({
           id_serie: item.id,
           id_test: item.id_test,
           code_serie: item.code,
@@ -503,7 +514,7 @@ export const getResultsWithSerieCampoM2 = async (
           statusBol: true,
           data: itemResults,
         });
-      }, 3000);
+      }, 0);
     }
   } catch (error) {
     if (error instanceof Error) {
