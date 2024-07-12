@@ -9,11 +9,13 @@ import { setResult,
     getSizeResults, 
     setSize, 
     getResultsM2, 
-    setResultM2 } from "../controllers/results.controller";
+    setResultM2, 
+    updateCamp5} from "../controllers/results.controller";
 
 const router = Router()
 
 router.post('/results/save', setResult)
+router.post('/results/update/camp5', updateCamp5)
 router.post('/results/size/save', setSize)
 router.get('/results/listAll/:idTest', getResultsWithSerie)
 router.get('/resultsCampo/listAll/:idTest', getResultsWithSerieCampo)

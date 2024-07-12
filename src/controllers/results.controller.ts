@@ -67,6 +67,35 @@ export const setResult = async (req: Request, res: Response) => {
   }
 };
 
+export const updateCamp5 = async (req: Request, res: Response) => {
+  try {
+    const { id, camp5 } = req.body;
+
+    // Update camp5
+    const result = await Results.update({ id: id }, { camp5: camp5.trim() });
+
+    if (!result.affected) {
+      return res.status(404).json({
+        statusBol: false,
+        message: 'Result not found',
+      });
+    }
+
+    return res.status(200).json({
+      statusBol: true,
+      message: 'Updated successfully',
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({
+        statusBol: false,
+        message: error.message,
+      });
+    }
+  }
+};
+
+
 export const setResultCamp = async (req: Request, res: Response) => {
   try {
     const {
@@ -234,7 +263,8 @@ export const getResultsOneSerie = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
-    const ResultsView = await Results_view.findBy({ id_serie: parseInt(id) });
+    let ResultsView = await Results_view.findBy({ id_serie: parseInt(id) });
+    ResultsView = ResultsView.sort((a, b) => a.id - b.id);
 
     return res.status(200).json({
       statusBol: true,
@@ -343,6 +373,8 @@ export const getResultsM2 = async (req: Request, res: Response) => {
     );
 
     if (save) {
+      itemResults.sort((a, b) => a.id - b.id);
+
       return res.status(200).json({
         statusBol: true,
         data: itemResults,
