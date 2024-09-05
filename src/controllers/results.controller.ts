@@ -44,7 +44,7 @@ export const setResult = async (req: Request, res: Response) => {
           status: status,
           created_at: new Date(),
           updated_at: new Date(),
-          code: id_serie + item.camp5.trim(),
+          code: id_serie + item.camp5.trim() + item.camp4.trim(),
         });
         const oneLine = Serie.create({
           wind: wind,
