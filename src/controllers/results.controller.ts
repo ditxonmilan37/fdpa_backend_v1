@@ -20,6 +20,8 @@ export const setResult = async (req: Request, res: Response) => {
 
     const save = await Promise.all(
       itemsResults.map(async (item: any) => {
+        let na = item.camp4 ? item.camp4 : "";
+        let na2 = item.camp6 ? item.camp6 : "";
         const resultados = Results.create({
           id_serie: id_serie,
           camp1: item.camp1,
@@ -44,7 +46,7 @@ export const setResult = async (req: Request, res: Response) => {
           status: status,
           created_at: new Date(),
           updated_at: new Date(),
-          code: id_serie + item.camp5.trim() + "NW" + item.camp6 + item.camp4,
+          code: id_serie + item.camp5.trim() + "NW" + na2 + na,
         });
         const oneLine = Serie.create({
           wind: wind,
