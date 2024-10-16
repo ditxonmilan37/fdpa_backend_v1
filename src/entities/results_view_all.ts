@@ -15,10 +15,19 @@ export class Results_view extends BaseEntity {
   camp2: string;
 
   @ViewColumn()
+  names: string;
+
+  @ViewColumn()
+  birthday: string;
+
+  @ViewColumn()
   camp3: string;
 
   @ViewColumn()
   camp4: string;
+
+  @ViewColumn()
+  last_name: string;
 
   @ViewColumn()
   camp5: string;

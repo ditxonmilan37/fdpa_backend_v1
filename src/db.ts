@@ -18,6 +18,7 @@ import { Results_view_campo, Results_view_m2_size, Results_view_m2 } from "./ent
 import { Time_view } from "./entities/time_view_all";
 import { Turn_view } from "./entities/turn_view_all";
 import { TestTime_view } from "./entities/test_view_all";
+import { view_data_peoples_stivou } from "./entities/data_peoples";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -48,7 +49,8 @@ export const AppDataSource = new DataSource({
         TestTime_view,
         Results_view_m2_size,
         ResultsM2,
-        Results_view_m2
+        Results_view_m2,
+        view_data_peoples_stivou
     ],
     logging: true
 

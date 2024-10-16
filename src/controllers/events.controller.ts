@@ -11,6 +11,7 @@ import { Test_view } from '../entities/test_view_all'
 import { Serie_view } from '../entities/serie_view_all'
 import { Results_view, Results_view_m2 } from '../entities/results_view_all'
 import { Results } from '../entities/results'
+import { view_data_peoples_stivou } from '../entities/data_peoples'
 
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
@@ -116,6 +117,7 @@ function eventToHtml(eventData: any) {
           <td style="padding: 2px; font-size: 9px" width="10%;">Posición.</td>
           <td style="padding: 2px; font-size: 9px" width="10%"># Comp.</td>
           <td style="padding: 2px; font-size: 9px" width="30%">Nombre</td>
+          <td style="padding: 2px; font-size: 9px" width="20%">Nac.</td>
           <td style="padding: 2px; font-size: 9px" width="10%">Equipo</td>
           <td style="padding: 2px; font-size: 9px" width="10%">Marca</td>
         </tr>
@@ -128,6 +130,10 @@ function eventToHtml(eventData: any) {
         </td>
         <td style="padding: 2px; font-size: 7px">
           ${result.camp5.toUpperCase() }
+        </td>
+
+        <td style="padding: 2px; font-size: 7px">
+          ${result.birthday ? result.birthday : ' '}
         </td>
         <td style="padding: 2px; font-size: 7px">
           ${ result.camp6}
@@ -173,7 +179,7 @@ function eventToHtml(eventData: any) {
       <tr
           style="background-color: #16203e; color: #ffd792; font-weight: bold"
         >
-          <td colspan="4" style="padding: 2px; font-size: 9px" width="10%;">${result.camp5}</td>
+          <td colspan="4" style="padding: 2px; font-size: 9px" width="10%;">${result.camp5} | ${result.birthday ? result.birthday : ' '}</td>
           <td style="padding: 2px; font-size: 9px" width="10%">${result.camp6}</td>
           <td style="padding: 2px; font-size: 9px" width="10%"></td>
           <td style="padding: 2px; font-size: 9px" width="10%">${result.parcial ? result.parcial : ' '}</td>
@@ -277,7 +283,7 @@ function eventToHtml(eventData: any) {
             style="background-color: #16203e; color: #ffd792; font-weight: bold"
           >
 
-            <td colspan="${(result.results.length * 3) + 1}" style="padding: 2px; font-size: 9px">${result.name} <span style="float: right; margin-right: 20px">${result.lastSizeWithOne}</span> </td>
+            <td colspan="${(result.results.length * 3) + 1}" style="padding: 2px; font-size: 9px">${result.name} | ${result?.people[0]?.birthday ? result?.people[0]?.birthday : ' '} <span style="float: right; margin-right: 20px">${result.lastSizeWithOne}</span> </td>
           </tr>
           <tr
             style="background-color: #d6d6d6; color: #000000; font-weight: bold"
@@ -343,9 +349,10 @@ export const getEvent = async (req: Request, res: Response) => {
             const time = await Time_view.findOneBy({id: test.id_time}) // Asume que cada test tiene una propiedad 'id_time'
             const dataTest = await DataTest_view.findOneBy({id_test: test.id_test}) // Asume que cada test tiene una propiedad 'id_time'
             const series = await Serie_view.findBy({id_test: test.id, status: 1}) // Asume que cada test tiene una propiedad 'id'
+            //const peoples = await view_data_peoples_stivou.findBy({id_athlete: test.id}) // Asume que cada test tiene una propiedad 'id'
             //const dataTest = await DataTest_view.findOneBy({id_test: test.id}) // Asume que cada test tiene una propiedad 'id'
 
-            const seriesData = await Promise.all(series.map(async (serie) => {
+            const seriesData = await Promise.all(series.map(async (serie:any) => {
                 const resultsView = await Results_view.findBy({id_serie: serie.id})
                 const resultsViewM2 = await Results_view_m2.findBy({id_serie: serie.id})
 
@@ -357,6 +364,15 @@ export const getEvent = async (req: Request, res: Response) => {
                     const ResultsViewM2 = await Results_view_m2.findBy({
                     id_result: item.id,
                     });
+
+                    let people:any;
+                    try {
+                      people = await view_data_peoples_stivou.findBy({id: parseInt(item.camp2)});
+                      
+                    } catch (error) {
+                      
+                      people = [];
+                    }
 
                     let result = JSON.parse(JSON.stringify(ResultsViewM2));
 
@@ -395,6 +411,7 @@ export const getEvent = async (req: Request, res: Response) => {
                     id: item.id,
                     name: item.camp5,
                     results: itemResultsM2,
+                    people: people,
                     lastSizeWithOne: lastSizeWithOne,
                     });
 
@@ -428,6 +445,11 @@ export const getEvent = async (req: Request, res: Response) => {
         };
 
         const html = eventToHtml(eventData);
+
+       /*return res.status(200).json({
+          statusBol: false,
+          message: eventData
+      });*/
         
         pdf.create(html, {orientation: 'landscape'}).toStream((err, stream) => {
             if (err) {
@@ -439,11 +461,8 @@ export const getEvent = async (req: Request, res: Response) => {
 
             res.setHeader('Content-Type', 'application/pdf');
             stream.pipe(res);
-            //return res.status(200).json({
-            //    statusBol: false,
-            //    message: eventData
-            //});
-        });
+           
+       });
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
