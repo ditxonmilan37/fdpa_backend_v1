@@ -253,6 +253,9 @@ export class Results_view_campo extends BaseEntity {
 
   @ViewColumn()
   parcial: number;
+
+  @ViewColumn()
+  code_pais: string;
 }
 
 @ViewEntity("view_data_r2_size")

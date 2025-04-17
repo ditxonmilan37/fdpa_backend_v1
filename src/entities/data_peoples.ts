@@ -27,4 +27,7 @@ export class view_data_peoples_stivou extends BaseEntity {
     @Column()
     birthday: string
 
+    @Column()
+    code_pais: string
+
 }
