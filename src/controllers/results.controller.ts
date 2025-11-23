@@ -9,6 +9,7 @@ import {
 } from "../entities/results_view_all";
 import { Serie } from "../entities/serie";
 import { stringify } from "querystring";
+import { AppDataSource } from "../db";
 
 export const setResult = async (req: Request, res: Response) => {
   try {
@@ -86,6 +87,83 @@ export const updateCamp5 = async (req: Request, res: Response) => {
     return res.status(200).json({
       statusBol: true,
       message: 'Updated successfully',
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({
+        statusBol: false,
+        message: error.message,
+      });
+    }
+  }
+};
+
+// Actualizar cualquier campo de un resultado
+export const updateResult = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const resultsRepository = AppDataSource.getRepository(Results);
+
+    // Verificar que el resultado existe
+    const existingResult = await resultsRepository.findOneBy({ id: parseInt(id) });
+    
+    if (!existingResult) {
+      return res.status(404).json({
+        statusBol: false,
+        message: 'Result not found',
+      });
+    }
+
+    // Agregar updated_at automáticamente
+    updateData.updated_at = new Date();
+
+    // Actualizar el resultado
+    await resultsRepository.update({ id: parseInt(id) }, updateData);
+
+    // Obtener el resultado actualizado
+    const updatedResult = await resultsRepository.findOneBy({ id: parseInt(id) });
+
+    return res.status(200).json({
+      statusBol: true,
+      message: 'Result updated successfully',
+      data: updatedResult,
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({
+        statusBol: false,
+        message: error.message,
+      });
+    }
+  }
+};
+
+// Eliminar un resultado
+export const deleteResult = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const resultsRepository = AppDataSource.getRepository(Results);
+
+    // Verificar que el resultado existe
+    const existingResult = await resultsRepository.findOneBy({ id: parseInt(id) });
+    
+    if (!existingResult) {
+      return res.status(404).json({
+        statusBol: false,
+        message: 'Result not found',
+      });
+    }
+
+    // Eliminar el resultado
+    await resultsRepository.delete({ id: parseInt(id) });
+
+    return res.status(200).json({
+      statusBol: true,
+      message: 'Result deleted successfully',
+      data: existingResult,
     });
   } catch (error) {
     if (error instanceof Error) {

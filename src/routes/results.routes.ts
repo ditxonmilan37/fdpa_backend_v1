@@ -10,7 +10,9 @@ import { setResult,
     setSize, 
     getResultsM2, 
     setResultM2, 
-    updateCamp5} from "../controllers/results.controller";
+    updateCamp5,
+    updateResult,
+    deleteResult} from "../controllers/results.controller";
 
 const router = Router()
 
@@ -25,6 +27,8 @@ router.get('/results/list/m2/:id', getResultsM2)
 router.get('/results/getsizeresults/:id', getSizeResults)
 router.put('/results/update/:id', setResultCamp)
 router.put('/results/update/m2/:id', setResultM2)
+router.put('/results/:id', updateResult) // Actualizar cualquier campo de un resultado
+router.delete('/results/:id', deleteResult) // Eliminar un resultado específico
 router.delete('/results/delete/:id', deleteResultsOneSerie)
 
 export default router
